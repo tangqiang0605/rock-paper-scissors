@@ -1,16 +1,13 @@
-name: Build and Package
-
-env:
-  GH_TOKEN: ${{ secrets.GH_TOKEN }}
+name: Build and Release
 
 on:
   push:
     branches:
-      - main
+      - master
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout code
@@ -21,10 +18,20 @@ jobs:
         with:
           node-version: '16'
 
+      - name: Cache node_modules
+        uses: actions/cache@v2
+        with:
+          path: node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
       - name: Install dependencies
         run: npm install
 
       - name: Build project
+        env:
+          GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: npm run build
 
       - name: Upload artifacts
@@ -32,3 +39,13 @@ jobs:
         with:
           name: dist
           path: dist/
+
+      - name: Create GitHub Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            dist/*.exe
+            dist/*.nsis.zip
+          generate_release_notes: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}

@@ -1,0 +1,23 @@
+{
+  "name": "rock-paper-scissors",
+  "version": "1.0.0",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^23.0.0",
+    "electron-builder": "^23.0.0"
+  },
+  "build": {
+    "appId": "com.example.rockpaperscissors",
+    "productName": "Rock Paper Scissors",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "src/**/*"
+    ]
+  }
+}
